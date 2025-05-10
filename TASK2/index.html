@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Front-End Music Player</title>
+
+<style>
+  /* Import a stylish font from Google Fonts */  
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');  
+
+/* Reset some default margins and set up full viewport height for centering */  
+body {  
+  margin: 0;  
+  height: 100vh;  
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
+  background: linear-gradient(135deg, #0f2027, #203a43);  
+  font-family: 'Orbitron', sans-serif;  
+}  
+
+/* Centered container with a sleek card style */  
+#centered-box {  
+  width: 50%;  
+  max-width: 1000px;  
+  padding: 30px 20px;  
+  background: linear-gradient(135deg, #1c1c1c, #333);  
+  border-radius: 20px;  
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);  
+  display: flex;  
+  flex-direction: column;  
+  align-items: center;  
+  transition: all 0.3s ease;  
+}  
+
+/* Heading style */  
+#music-player-wrapper h1 {  
+  font-size: 2.4em;  
+  margin-bottom: 15px;  
+  color: #ffe600;  
+  letter-spacing: 2px;  
+  text-align: center;  
+}  
+
+/* Search box styling with responsive width */  
+#search {  
+  width: 100%;  
+  max-width: 350px;  
+  padding: 12px 20px;  
+  margin-bottom: 15px;  
+  border-radius: 25px;  
+  border: none;  
+  font-size: 1em;  
+  outline: none;  
+  background: rgba(255,255,255,0.1);  
+  color:  #d6c914;  
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);  
+  transition: background 0.3s, box-shadow 0.3s;  
+}  
+
+#search:focus {  
+  background: rgba(255,255,255,0.2);  
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.4);  
+}  
+
+/* Category dropdown, same width style for responsiveness */  
+#category {  
+  width: 100%;  
+  max-width: 250px;  
+  padding: 12px 15px;  
+  border-radius: 25px;  
+  border: none;  
+  font-size: 1em;  
+  font-family: 'Orbitron', sans-serif;  
+  outline: none;  
+  background: rgba(255,255,255,0.1);  
+  color: #d6c914;  
+  margin-bottom: 25px;  
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);  
+  transition: background 0.3s, box-shadow 0.3s;  
+}  
+
+#category:focus {  
+  background: rgba(255,255,255,0.2);  
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.4);  
+}  
+
+
+
+/* Playlist styles with smooth scrolling and modern backdrop */  
+#playlist {  
+  width: 100%;  
+  max-height: 250px;  
+  overflow-y: auto;  
+  margin-bottom: 30px;  
+  background: rgba(255,255,255,0.1);  
+  border-radius: 15px;  
+  border: 1px solid rgba(255,255,255,0.2);  
+  padding: 10px 0;  
+  backdrop-filter: blur(10px);  
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.2);  
+  font-size: 1.1em;  
+}  
+
+/* Fancy scrollbar for playlist (WebKit browsers) */  
+#playlist::-webkit-scrollbar {  
+  width: 8px;  
+}  
+#playlist::-webkit-scrollbar-thumb {  
+  background: #ffe600;  
+  border-radius: 4px;  
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.3);  
+}  
+#playlist::-webkit-scrollbar-thumb:hover {  
+  background: #ffd700;  
+}  
+
+/* Playlist item styles with hover effects */  
+#playlist li {  
+  padding: 12px 20px;  
+  display: flex;  
+  justify-content: space-between;  
+  align-items: center;  
+  cursor: pointer;  
+  transition: background 0.3s, transform 0.2s;  
+  border-bottom: 1px solid rgba(255,255,255,0.2);  
+}  
+
+#playlist li:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateX(2px);
+}
+
+/* Highlight the currently playing song */
+#playlist li.playing {
+  background: linear-gradient(135deg, #00f2fe, #4facfe);
+  color: #fff;
+  font-weight: bold;
+  box-shadow: inset 0 0 8px #00f2fe, 0 0 15px #00f2fe;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Controls container with modern layout */
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* Style buttons inside controls for a modern look */
+#controls button {
+  padding: 14px 24px;
+  min-width: 90px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2em;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  box-shadow: 0 12px 25px rgba(247, 151, 30, 0.3);
+  color: #0f2027;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Add hover and active effects to buttons */
+#controls button:hover {
+  background: linear-gradient(135deg, #ea4c89, #ff7e5f);
+  box-shadow: 0 15px 30px rgba(234, 76, 137, 0.4);
+  transform: translateY(-2px);
+}
+
+#controls button:active {
+  transform: translateY(0);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Volume slider styles */
+#volume {
+  width: 150px;
+  accent-color: #ffe600; /* Chrome, Edge, etc. */
+  height: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#volume:hover {
+  filter: brightness(1.2);
+}
+
+/* "Now Playing" box styling for prominence */
+#nowPlaying {
+  width: 100%;
+  max-width: 800px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: #fff;
+  text-align: center;
+}
+
+/* Responsive text size for smaller devices */
+@media(max-width: 600px) {
+  #music-player-wrapper h1 {
+    font-size: 1.8em;
+  }
+  #nowPlaying {
+    font-size: 1em;
+  }
+  #search {
+    font-size: 0.9em;
+  }
+  #controls button {
+    font-size: 1em;
+    padding: 10px 20px;
+  }
+}
+
+
+
+
+</style>
+
+
+
+
+
+</head>
+<body>
+  <!-- Centered container box -->
+  <div id="centered-box">
+    <div id="music-player-wrapper">
+      <h1>Music Player</h1>
+      <input type="text" id="search" placeholder="Search..."/>
+      <select id="category">
+        <option value="">All Categories</option>
+      </select>
+      <ul id="playlist"></ul>
+      <div id="controls">
+        <button id="prev">Prev</button>
+        <button id="playPause">Play</button>
+        <button id="next">Next</button>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1"/>
+      </div>
+      <div id="nowPlaying">No song selected</div>
+      <audio id="audio"></audio>
+    </div>
+  </div>
+</body>
+
+<!-- ... keep your existing HTML structure ... -->
+<script>
+// Your music data
+const musicData = [
+  { title: 'Jhol Coke Studio Pakistan Season15', category: 'Pakistani', filename: 'music/Jhol  Coke Studio Pakistan  Season 15  Maanu x Annural Khalid.mp3' },
+  { title: 'Bayaan, Hasan Raheem, Rovalio - Maand (Lyrics)', category: 'Pakistani', filename: 'music/Bayaan, Hasan Raheem, Rovalio - Maand (Lyrics).mp3' },
+  { title: '𝐓𝐞𝐫𝐚 𝐌𝐞𝐫𝐚 𝐇𝐚𝐢 𝐏𝐲𝐚𝐫 𝐀𝐦𝐚𝐫Ishq Murshid - [ OST  ]', category: 'Pakistani', filename: 'music/𝐓𝐞𝐫𝐚 𝐌𝐞𝐫𝐚 𝐇𝐚𝐢 𝐏𝐲𝐚𝐫 𝐀𝐦𝐚𝐫Ishq Murshid - [ OST ] - Singer_ Ahmed Jahanzeb.mp3' },
+   { title: 'Beqarar Yeh Dil - Meem Se Mohabbat OST  ', category: 'Pakistani', filename: 'music/Beqarar Yeh Dil - Meem Se Mohabbat OST  Singers_ Asim Azhar & Qirat Haider - HUM TV.mp3' },
+    { title: 'Sadqay Tumhare full OST ', category: 'Pakistani', filename: 'music/Sadqay Tumhare full OST by Rahat Fateh Ali Khan  Mahira  Adnan Malik  Khalil Ur Rehman Qamar.mp3' },
+
+    { title: 'Pal Pal Jeena Muhal (Official Video)  Rony Roy  Punjabi Love Song', category: 'Punjabi', filename: 'music/Pal Pal Jeena Muhal (Official Video)  Rony Roy  Punjabi Love Song 2025  2.4M Views.mp3' },
+ { title: 'Diljit Dosanjh - G.O.A.T. (Official Music Video).', category: 'Punjabi', filename: 'music/Diljit Dosanjh - G.O.A.T. (Official Music Video).mp3' },
+  { title: 'Diljit Dosanjh_ LOVER (Official Music Video) ', category: 'Punjabi', filename: 'music/Diljit Dosanjh_ LOVER (Official Music Video) Intense  Raj Ranjodh  MoonChild Era.mp3' },
+   { title: 'Naina  Crew  Diljit Dosanjh, ', category: 'Punjabi', filename: 'music/Naina  Crew  Diljit Dosanjh, Ft. Badshah  Tabu, Kareena Kapoor Khan, Kriti Sanon  Raj Ranjodh.mp3' },
+    { title: 'Pal Pal Jeena Muhal (Official Video)', category: 'Punjabi', filename: 'music/Pal Pal Jeena Muhal (Official Video)  Rony Roy  Punjabi Love Song 2025  2.4M Views.mp3' },
+
+    { title: 'CALIFORNIA LOVE (Official Video) ', category: 'English', filename: 'music/CALIFORNIA LOVE (Official Video) Cheema Y  Gur Sidhu  Punjabi Song 2023.mp3' },
+    { title: 'Maroon 5 - Memories (Lyrics)', category: 'English', filename: 'music/Maroon 5 - Memories (Lyrics).mp3' },
+    { title: 'Alone Night 💔 Mash-up l Lofi pupil', category: 'English', filename: 'music/Alone Night 💔 Mash-up l Lofi pupil _ Bollywood songs _ Chillout Lo-fi Mix _ Ronak Bhatt.mp3' },
+    { title: 'YOUR EYES - La Boum 2 (1982) ', category: 'English', filename: 'music/YOUR EYES - La Boum 2 (1982) Soundtrack.mp3' },
+    { title: ' Timeless songs of 80s 90s', category: 'English', filename: 'music/[LErics] Timeless songs of 80s 90s 💖 All Time Favorite Hits Songs 💕 Romantic Old Love Songs Playlist.mp3' },
+
+ { title: ' Barbaadiyan (Full Video) Shiddat', category: 'Hindi', filename: 'music/Barbaadiyan (Full Video) Shiddat Sunny K,Radhika M Sachet T,Nikhita G, Madhubanti BSachin -Jigar.mp3' },
+ { title: 'Tujh Mein Rab Dikhta Hai Song   ', category: 'Hindi', filename: 'music/Tujh Mein Rab Dikhta Hai Song  Rab Ne Bana Di Jodi  Shah Rukh Khan, Anushka Sharma  Roop Kumar.mp3' },
+ { title: ' Raataan Lambiyan - Lyric Video ', category: 'Hindi', filename: 'music/Raataan Lambiyan - Lyric Video ShershaahSidharth, KiaraTanishk B.JubinAsees.mp3' },
+ { title: 'Falak Tak Chal Sath Mere  ( Slowed  Reverb )  ', category: 'Hindi', filename: 'music/Falak Tak Chal Sath Mere  ( Slowed  Reverb ) #lofi #lofimusic @kojaasthetic.mp3' },
+ { title: 'Lamhey_ Anubha Bajaj  Trending Song 2023  ', category: 'Hindi', filename: 'music/Lamhey_ Anubha Bajaj  Trending Song 2023  Official Video.mp3' },
+
+];
+
+const audio = document.getElementById('audio');
+const playlistEl = document.getElementById('playlist');
+const nowPlayingEl = document.getElementById('nowPlaying');
+const playPauseBtn = document.getElementById('playPause');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const volumeSlider = document.getElementById('volume');
+const searchInput = document.getElementById('search');
+const categorySelect = document.getElementById('category');
+
+let currentIndex = -1;
+
+// Populate categories
+(function populateCategories() {
+  const categories = [...new Set(musicData.map(item => item.category))];
+  categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    categorySelect.appendChild(opt);
+  });
+})();
+
+// Filter songs based on category
+function displaySongsByCategory() {
+  const selectedCategory = categorySelect.value;
+  if (selectedCategory === "") {
+    // Show no songs or clear playlist
+    playlistEl.innerHTML = '';
+    nowPlayingEl.textContent='Select a category to display songs.';
+    return;
+  }
+  // Filter songs based on selected category
+  const filteredSongs = musicData.filter(s => s.category === selectedCategory);
+  displayPlaylist(filteredSongs);
+}
+
+// Display playlist
+function displayPlaylist(list) {
+  playlistEl.innerHTML = '';
+  list.forEach((song, index) => {
+    const li = document.createElement('li');
+    li.textContent = `${song.title} (${song.category})`;
+    li.onclick = () => { playSong(index); };
+    playlistEl.appendChild(li);
+  });
+  // Reset current playing
+  currentIndex = -1;
+  nowPlayingEl.textContent='Select a song to play.';
+}
+
+// Play song at index in the filtered list
+let currentPlaylist = [];
+function playSong(index) {
+  currentIndex = index;
+  const song = currentPlaylist[currentIndex];
+  audio.src = song.filename;
+  audio.play();
+  updateNowPlaying();
+  highlightPlaying();
+  updatePlayPauseButton('pause');
+}
+
+function updateNowPlaying() {
+  if(currentIndex >=0 && currentPlaylist[currentIndex]){
+    const song = currentPlaylist[currentIndex];
+    nowPlayingEl.textContent = `Now Playing: ${song.title} (${song.category})`;
+  }
+}
+
+// Highlight current song in playlist
+function highlightPlaying() {
+  Array.from(playlistEl.children).forEach((li, i) => {
+    li.className = i === currentIndex ? 'playing' : '';
+  });
+}
+
+// Event handlers
+document.getElementById('playPause').onclick = () => {
+  if (audio.paused) {
+    if (currentIndex === -1 && currentPlaylist.length>0) {
+      playSong(0);
+    } else {
+      audio.play();
+    }
+  } else {
+    audio.pause();
+  }
+};
+document.getElementById('prev').onclick = () => {
+  if (currentIndex > 0) playSong(currentIndex - 1);
+};
+document.getElementById('next').onclick = () => {
+  if (currentIndex < currentPlaylist.length - 1) playSong(currentIndex + 1);
+};
+audio.onplay=()=>updatePlayPauseButton('pause');
+audio.onpause=()=>updatePlayPauseButton('play');
+audio.onended=()=>{
+  if (currentIndex<currentPlaylist.length - 1) playSong(currentIndex+1);
+};
+volumeSlider.oninput=()=>{ audio.volume=volumeSlider.value; };
+
+// When category is selected, show songs in that category only
+categorySelect.onchange=()=>{
+  // get songs in selected category
+  const selectedCategory = categorySelect.value;
+  if(selectedCategory===""){
+    playlistEl.innerHTML='';
+    nowPlayingEl.textContent='Select a category to display songs.';
+    currentPlaylist=[]; currentIndex = -1;
+    return;
+  }
+  currentPlaylist=musicData.filter(s=>s.category===selectedCategory);
+  displayPlaylist(currentPlaylist);
+  if(currentPlaylist.length>0){
+    playSong(0);
+  } else {
+    nowPlayingEl.textContent='No songs in this category.';
+    currentIndex=-1; 
+  }
+}
+
+// Initialize: optionally hide playlist initially
+// or instruct user to select a category
+</script>
+
+</body>
+</html>
